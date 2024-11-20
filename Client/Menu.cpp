@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cstdlib> // For system commands
+#include "TCPClient.h"
 using namespace std;
 
-int static Menu() {
+int static Menu(TCPClient& client) {
     int choice;
 
     do {
@@ -22,9 +23,11 @@ int static Menu() {
         switch (choice) {
         case 1:
             cout << "\nYou selected: Allocate Memory\n";
+            client.sendMessage("Allocate Memory");  // Send message to server
             break;
         case 2:
             cout << "\nYou selected: Deallocate Memory\n";
+            client.sendMessage("Deallocate Memory");  // Send message to server
             break;
         case 3:
             cout << "\nThank you for using the program. Goodbye!\n";

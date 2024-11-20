@@ -4,27 +4,17 @@
 using namespace std;
 
 
-int main()
-{
-    Menu();
-
+int main() {
     try {
         TCPClient client;
+        client.connectToServer("127.0.0.1", 8080); // Connect to the server (use the correct IP and port)
 
-        // Connect to the server
-        client.connectToServer("127.0.0.1", 8080);
-
-        // Send a message to the server
-        client.sendMessage("Hello, Server!");
-
-        // Receive a message from the server
-        std::string serverResponse = client.receiveMessage();
-        std::cout << "Server response: " << serverResponse << "\n";
+        Menu(client); // Call the menu function and pass the TCPClient instance
 
     }
-    catch (const std::exception& ex) {
-        std::cerr << "Error: " << ex.what() << "\n";
+    catch (const std::runtime_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
+
     return 0;
 }
-
