@@ -7,11 +7,14 @@
 #include <thread>
 #include <winsock2.h> // Windows Sockets API
 #include <ws2tcpip.h> // For sockaddr_in
+#include "CircularBuffer.hpp"
 
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 class Server {
 private:
+    //TODO:Circular buffer
+   // CircularBuffer<std::string> requestBuffer; // Buffer to store client requests
     SOCKET serverSocket;             // Server socket file descriptor
     int port;                        // Port number to bind the server
     sockaddr_in serverAddr;          // Server address structure

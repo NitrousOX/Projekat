@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//Implementirati circular buffer
 Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
     // Initialize Winsock
     WSADATA wsaData;
