@@ -24,6 +24,7 @@
     <ProjectGuid>{e252bb08-1820-4c2e-a0af-8be21b26a578}</ProjectGuid>
     <RootNamespace>MemoryManagement</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -127,11 +128,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="MemoryManagement.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Server.hpp" />
   </ItemGroup>
