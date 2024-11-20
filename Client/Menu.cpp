@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib> // For system commands
 #include "TCPClient.h"
 using namespace std;
 
@@ -7,8 +6,6 @@ int static Menu(TCPClient& client) {
     int choice;
 
     do {
-        // Display menu
-        system("cls");
         cout << "\n";
         cout << "=============================\n";
         cout << "         MAIN MENU           \n";
