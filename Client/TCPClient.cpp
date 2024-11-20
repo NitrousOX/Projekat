@@ -49,8 +49,6 @@ void TCPClient::sendMessage(const std::string& message) {
     if (bytesSent == SOCKET_ERROR) {
         throw std::runtime_error("Send failed: " + std::to_string(WSAGetLastError()));
     }
-
-    std::cout << "Message sent: " << message << "\n";
 }
 
 // Receive a message from the server
