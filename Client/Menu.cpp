@@ -8,6 +8,7 @@ int static Menu(TCPClient& client) {
 
     do {
         // Display menu
+        system("cls");
         cout << "\n";
         cout << "=============================\n";
         cout << "         MAIN MENU           \n";
