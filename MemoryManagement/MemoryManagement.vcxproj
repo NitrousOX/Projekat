@@ -130,7 +130,6 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
-    <ClCompile Include="MemoryManagement.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
