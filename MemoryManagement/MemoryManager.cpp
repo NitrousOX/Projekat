@@ -20,6 +20,14 @@ MemoryManager::~MemoryManager() {
     cleanup();
 }
 
+
+//NOTE:Mislim da bi trebalo napraviti posebno create i allocate metode create bi napravilo nove segmente/segment i sve bi bilo isFree = ture
+//dok allocate bi dobio broj/velicinu segmenta koji treba da zauzme koje je create() napravio
+//Znaci inicijalno kad se pokrene program create() se pozove da kreira sve segmente i sa njim bi se dodali novi segmenti
+//a allocate se poziva kad client kaze koliko mesta zeli pa sa bestfit algoritmom allociramo toliko segmenata da ispuni zahtev;
+//Tu u memory manageru se cuva head liste segmenata i on pretrazuje/dodaje/brise elem
+
+
 // Allocate a new memory segment and add it to the list
 void* MemoryManager::allocate() {
     // Create a new segment
@@ -31,7 +39,7 @@ void* MemoryManager::allocate() {
     ++totalSegments;
 
     // Set the segment as not free
-    newSegment->setIsFree(false);
+    newSegment->setIsFree(true);
 
     return newSegment->getData();  // Return the allocated memory block
 }

@@ -3,6 +3,9 @@
 
 #include <cstdlib>
 
+//NOTE: Ovde bih rekao da nam ne treba data polje posto nista ne pisemo u segmente vec ih samo zauzimamo.
+//takodje treba nekako size da napravimo u config file-u da se moze izabrati pre pocetka programa
+
 class Segment {
 private:
     void* data;         // Pointer to the allocated memory block
