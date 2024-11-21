@@ -3,15 +3,15 @@
 
 #include <cstdlib>
 
-//NOTE: Ovde bih rekao da nam ne treba data polje posto nista ne pisemo u segmente vec ih samo zauzimamo.
-//takodje treba nekako size da napravimo u config file-u da se moze izabrati pre pocetka programa
 
 class Segment {
 private:
-    void* data;         // Pointer to the allocated memory block
-    Segment* next;      // Pointer to the next segment in the list
-    size_t size;        // Size of the segment's memory block
-    bool isFree;
+    size_t segAdress;
+    Segment* nextMemory;
+    Segment* nextFreeMemory;
+    Segment* previousFreeMemory;
+    size_t size;
+    bool isFree = true;
 
 public:
     // Constructor
@@ -20,24 +20,35 @@ public:
     // Destructor
     ~Segment();
 
-    // Getter for data
-    void* getData() const {
-        return data;
+    //Geter setter for next memory segment
+    Segment* getNextMemory() const {
+        return nextMemory;
     }
 
-    // Setter for data
-    void setData(void* newData) {
-        data = newData;
+    void setNextMemory(Segment* newNext) {
+        nextMemory = newNext;
+    }
+    //getter setter for next free memory segment
+    Segment* getNextFreeMemory() const {
+        if (isFree)
+            return nextFreeMemory;
+        else
+            return nullptr;
     }
 
-    // Getter for next segment
-    Segment* getNext() const {
-        return next;
+    void setNextFreeMemory(Segment* newNext) {
+        nextFreeMemory = newNext;
+    }
+    //getter setter for previous memory segment
+    Segment* getPreviousFreeMemory() const {
+        if (isFree)
+            return previousFreeMemory;
+        else
+            return nullptr;
     }
 
-    // Setter for next segment
-    void setNext(Segment* newNext) {
-        next = newNext;
+    void setPreviousFreeMemory(Segment* newPrevious) {
+        previousFreeMemory = newPrevious;
     }
 
     // Getter for size
@@ -48,6 +59,16 @@ public:
     // Setter for size
     void setSize(size_t newSize) {
         size = newSize;
+    }
+
+    // Getter for address
+    size_t getAddress() const {
+        return segAdress;
+    }
+
+    // Setter for address
+    void setAddress(size_t newAddress) {
+        segAdress = newAddress;
     }
 
     // Getter for isFree

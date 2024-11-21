@@ -1,19 +1,27 @@
 #include "Segment.h"
 
+//Treba menjati da prati dodatno i slobodnu memoriju 
+//Treba napraviti i tail
 #pragma once
 class MemoryManager
 {
+private:
+    size_t initialSegmentSize;
+    Segment* headAllMemory;
+    size_t totalSegments; 
+
+
 public:
-    MemoryManager(size_t segmentSize, size_t initialSegments = 5);
+    MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber = 5);
     ~MemoryManager();
 
-    void* allocate();
-    void deallocate(void* ptr);
-    void cleanup();  // Release unused segments if there are more than 5
+    bool allocateSeg(Segment* ptr);
+    bool deallocateSeg(Segment* ptr);
+    bool createSeg();
+    bool deleteSeg(Segment* ptr);
+    void cleanupSeg();
 
-private:
-    size_t segmentSize;   // The size of each memory segment
-    Segment* head;        // Head of the segment list
-    size_t totalSegments; // The current number of segments
+    Segment* getMemoryHead();
+
 };
 

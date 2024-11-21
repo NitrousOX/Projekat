@@ -10,13 +10,6 @@ using namespace std;
 int main()
 {
 
-    Segment segment(1024);
-    MemoryManager mm(1024, 3);
-
-    mm.allocate();
-    cout << segment.getIsFree() << endl;
-    mm.deallocate(&segment);
-    cout << segment.getIsFree() << endl;
     try {
         Server server(8080); // Initialize server on port 8080
         server.start();      // Start the server
