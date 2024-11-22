@@ -1,9 +1,13 @@
 #include <iostream>
 #include "TCPClient.h"
+#include "../MemoryManagement/ClientRequest.h"
 using namespace std;
 
 int static Menu(TCPClient& client) {
     int choice;
+    int size = 0;
+    string serializedRequest;
+    ClientRequest cr;  // Declare 'cr' before the switch statement
 
     do {
         cout << "\n";
@@ -20,12 +24,16 @@ int static Menu(TCPClient& client) {
         // Handle user choice
         switch (choice) {
         case 1:
+            cout << "\nWhat is the size you want to allocate:\n";
+            cin >> size;
+            cr = ClientRequest(size, choice);  // Initialize 'cr' here
+            serializedRequest = cr.serialize();
             cout << "\nYou selected: Allocate Memory\n";
-            client.sendMessage("Allocate Memory");  // Send message to server
+            client.sendMessage(serializedRequest);  // Send message to server
             break;
         case 2:
             cout << "\nYou selected: Deallocate Memory\n";
-            client.sendMessage("Deallocate Memory");  // Send message to server
+            client.sendMessage("2");  // Send message to server
             break;
         case 3:
             cout << "\nThank you for using the program. Goodbye!\n";

@@ -128,13 +128,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClientRequest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
-
+    <ClInclude Include="ClientRequest.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="CircularBuffer.hpp" />
     <ClInclude Include="Segment.h" />
