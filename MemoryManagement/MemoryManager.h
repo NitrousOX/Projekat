@@ -8,6 +8,7 @@ class MemoryManager
 private:
     size_t initialSegmentSize;
     Segment* headAllMemory;
+    Segment* tailAllMemory;
     size_t totalSegments; 
 
 
