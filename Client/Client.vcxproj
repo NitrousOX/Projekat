@@ -134,6 +134,11 @@
   <ItemGroup>
     <ClInclude Include="TCPClient.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MemoryManagement\MemoryManagement.vcxproj">
+      <Project>{e252bb08-1820-4c2e-a0af-8be21b26a578}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

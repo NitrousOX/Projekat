@@ -22,7 +22,7 @@ private:
     const int BUFFER_SIZE = 1024;    // Size of the buffer for client messages
 
     // Handles communication with a single client
-    void handleClient(SOCKET clientSocket);
+    void handleClient(SOCKET clientSocket, CircularBuffer& cb);
 
 public:
 

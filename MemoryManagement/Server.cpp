@@ -1,4 +1,10 @@
 #include "Server.hpp"
+#include "CircularBuffer.hpp"
+#include <thread>
+#include <vector>
+#include <mutex>
+#include <array>
+
 
 #define BUFFER_SIZE 1024
 
@@ -39,6 +45,8 @@ void Server::start() {
         throw runtime_error("Listen failed");
     }
 
+    CircularBuffer cb();
+
     cout << "Server listening on port " << port << endl;
 
     while (true) {
@@ -53,8 +61,8 @@ void Server::start() {
 
         cout << "New client connected." << endl;
 
-        // Launch a new thread to handle the client
-        threads.emplace_back(&Server::handleClient, this, clientSocket);
+        threads.emplace_back(&Server::handleClient, this, clientSocket, ref(cb));
+
     }
 }
 
@@ -77,8 +85,9 @@ void Server::stop() {
     cout << "Server stopped" << endl;
 }
 
-void Server::handleClient(SOCKET clientSocket) {
+void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
     vector<char> buffer(BUFFER_SIZE);
+
     while (true) {
         int bytesRead = recv(clientSocket, buffer.data(), BUFFER_SIZE - 1, 0);
         if (bytesRead <= 0) {
@@ -90,9 +99,16 @@ void Server::handleClient(SOCKET clientSocket) {
         buffer[bytesRead] = '\0';
         cout << "Received: " << buffer.data() << endl;
 
+        ClientRequest request;
+        request.deserialize(buffer.data()); 
+       
+        cb.add(request);
+       
         send(clientSocket, buffer.data(), bytesRead, 0);
     }
 }
+
+
 
 
 Server::~Server() {
