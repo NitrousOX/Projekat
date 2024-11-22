@@ -75,41 +75,55 @@ bool MemoryManager::createSeg() {
 
 
 bool MemoryManager::deleteSeg(Segment* ptr) {
-    Segment* current = headAllMemory;
-    Segment* previous = nullptr;
-
-    // Find the segment containing the given pointer
-    while (current != nullptr && current != ptr) {
-        previous = current;
-        current = current->getNextMemory();
+    if (ptr == nullptr) {
+        std::cerr << "Deallocate failed: Pointer not found!\n";
+        return false;
     }
 
-    if (current != nullptr) {
-        // Remove the segment from the list
-        if (previous != nullptr) {
-            previous->setNextMemory(current->getNextMemory());
-        }
-        else {
-            headAllMemory = current->getNextMemory();  // Removing the first element
-        }
-
-        //deleting dangling pointers
-        delete current;
-        delete previous;
-        current = nullptr;
-        previous = nullptr;
+    // Handle single-element list
+    if (ptr == headAllMemory && ptr == tailAllMemory) {
+        delete ptr;
+        headAllMemory = nullptr;
+        tailAllMemory = nullptr;
         --totalSegments;
         return true;
     }
-    else {
-        std::cerr << "Deallocate failed: Pointer not found!\n";
-        delete current;
-        delete previous;
-        current = nullptr;
-        previous = nullptr;
-        return false;
+
+    // Handle deleting head
+    if (ptr == headAllMemory) {
+        headAllMemory = ptr->getNextMemory();
+        headAllMemory->setPreviousMemory(nullptr);
+        delete ptr;
+        --totalSegments;
+        return true;
     }
+
+    // Handle deleting tail
+    if (ptr == tailAllMemory) {
+        tailAllMemory = ptr->getPreviousMemory();
+        tailAllMemory->setNextMemory(nullptr);
+        delete ptr;
+        --totalSegments;
+        return true;
+    }
+
+    // Handle middle element
+    Segment* next = ptr->getNextMemory();
+    Segment* previous = ptr->getPreviousMemory();
+
+    if (previous) {
+        previous->setNextMemory(next);
+    }
+    if (next) {
+        next->setPreviousMemory(previous);
+    }
+
+    delete ptr;
+    --totalSegments;
+
+    return true;
 }
+
 
 Segment* MemoryManager::getMemoryHead() {
     return headAllMemory;
