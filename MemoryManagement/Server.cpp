@@ -85,7 +85,7 @@ void Server::stop() {
     cout << "Server stopped" << endl;
 }
 
-void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
+void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
     vector<char> buffer(BUFFER_SIZE);
 
     while (true) {
