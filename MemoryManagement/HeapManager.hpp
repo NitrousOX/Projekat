@@ -5,7 +5,7 @@
 
 #pragma once
 
-
+//Uraditi mutex
 class HeapManager {
 private:
 	MemoryManager memManager;

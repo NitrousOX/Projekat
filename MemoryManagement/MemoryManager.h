@@ -22,7 +22,10 @@ public:
     bool deleteSeg(Segment* ptr);
     void cleanupSeg();
 
+    void printAllSegments();
+
     Segment* getMemoryHead();
+    Segment* getMemoryTail();
 
 };
 

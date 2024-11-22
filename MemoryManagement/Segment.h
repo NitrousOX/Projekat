@@ -8,6 +8,7 @@ class Segment {
 private:
     size_t segAdress;
     Segment* nextMemory;
+    Segment* previousMemory;
     Segment* nextFreeMemory;
     Segment* previousFreeMemory;
     size_t size;
@@ -28,6 +29,15 @@ public:
     void setNextMemory(Segment* newNext) {
         nextMemory = newNext;
     }
+
+    Segment* getPreviousMemory() const {
+        return previousMemory;
+    }
+
+    void setPreviousMemory(Segment* newPrevious) {
+        previousMemory = newPrevious;
+    }
+
     //getter setter for next free memory segment
     Segment* getNextFreeMemory() const {
         if (isFree)
