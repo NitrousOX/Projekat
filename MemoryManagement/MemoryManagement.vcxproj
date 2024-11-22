@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HeapManager.cpp" />
     <ClCompile Include="ClientRequest.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HeapManager.hpp" />
     <ClInclude Include="ClientRequest.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="CircularBuffer.hpp" />

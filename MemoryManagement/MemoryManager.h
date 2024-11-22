@@ -8,6 +8,7 @@ class MemoryManager
 private:
     size_t initialSegmentSize;
     Segment* headAllMemory;
+    Segment* tailAllMemory;
     size_t totalSegments; 
 
 
@@ -21,7 +22,10 @@ public:
     bool deleteSeg(Segment* ptr);
     void cleanupSeg();
 
+    void printAllSegments();
+
     Segment* getMemoryHead();
+    Segment* getMemoryTail();
 
 };
 

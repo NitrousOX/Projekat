@@ -6,7 +6,7 @@
 
 // MemoryManager constructor
 MemoryManager::MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber)
-    : initialSegmentSize(initialSegmentSize), headAllMemory(nullptr), totalSegments(0) {
+    : initialSegmentSize(initialSegmentSize), headAllMemory(nullptr), tailAllMemory(nullptr), totalSegments(0) {
 
     // Allocate the initial segments
     for (size_t i = 0; i < initialSegmentsNumber; ++i) {
@@ -19,14 +19,6 @@ MemoryManager::~MemoryManager() {
     // Release all segments when the manager is destroyed
     cleanupSeg();
 }
-
-
-//NOTE:Mislim da bi trebalo napraviti posebno create i allocate metode create bi napravilo nove segmente/segment i sve bi bilo isFree = ture
-//dok allocate bi dobio broj/velicinu segmenta koji treba da zauzme koje je create() napravio
-//Znaci inicijalno kad se pokrene program create() se pozove da kreira sve segmente i sa njim bi se dodali novi segmenti
-//a allocate se poziva kad client kaze koliko mesta zeli pa sa bestfit algoritmom allociramo toliko segmenata da ispuni zahtev;
-//Tu u memory manageru se cuva head liste segmenata i on pretrazuje/dodaje/brise elem
-
 
 //Treba menjati velicinu trenutnog segmenta i kreirati novi
 // Set segment as used
@@ -59,16 +51,20 @@ bool MemoryManager::createSeg() {
     try {
         Segment* newSegment = new Segment(initialSegmentSize);
 
-        newSegment->setNextMemory(headAllMemory);
-        headAllMemory = newSegment;
+        if (headAllMemory == nullptr && tailAllMemory == nullptr) {
+            headAllMemory = newSegment;
+            tailAllMemory = newSegment;
+
+            return true;
+        }
+
+        tailAllMemory->setNextMemory(newSegment);
+        newSegment->setPreviousMemory(tailAllMemory);
+        size_t prevAddr = tailAllMemory->getAddress();
+        newSegment->setAddress(prevAddr + tailAllMemory->getSize());
+        tailAllMemory = newSegment;
         ++totalSegments;
 
-        // Segment je slobodan kad se kreira
-        newSegment->setIsFree(true);
-
-
-        delete newSegment;
-        newSegment = nullptr;
         return true;
     }
     catch (...) {
@@ -119,6 +115,17 @@ Segment* MemoryManager::getMemoryHead() {
     return headAllMemory;
 }
 
+Segment* MemoryManager::getMemoryTail() {
+    return tailAllMemory;
+}
+
+void MemoryManager::printAllSegments() {
+    Segment* curr = headAllMemory;
+    while(curr != nullptr) {
+        std::cout << "Address: " << curr->getAddress() << std::endl << "isFree: " << curr->getIsFree() << std::endl;
+        curr = curr->getNextMemory();
+    }
+}
 
 //TODO: treba obrisati segmente ako ih ima vise od 5 slobodnih
 void MemoryManager::cleanupSeg() {
