@@ -11,8 +11,10 @@ int main()
 {
     MemoryManager mm(1024,3);
     mm.printAllSegments();
-    cout << "------------------------------" << endl;
     mm.allocateSeg(mm.getMemoryHead()->getNextMemory(), 658);
+    mm.printAllSegments();
+    mm.deallocateSeg(mm.getMemoryHead()->getNextMemory());
+    mm.cleanupSeg();
     mm.printAllSegments();
 
     try {

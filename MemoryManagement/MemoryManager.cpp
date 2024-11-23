@@ -60,7 +60,7 @@ bool MemoryManager::allocateSeg(Segment* ptr, int size) {
         return true;
     }
     catch (...) {
-        std::cout << "Desila se greska prilikom oslobadjanja mesta u segmentu" << std::endl;
+        std::cout << "Desila se greska prilikom zauzimanja mesta u segmentu" << std::endl;
         return false;
    }
 }
@@ -72,7 +72,7 @@ bool MemoryManager::deallocateSeg(Segment* ptr) {
         cleanupSeg();
     }
     catch (...) {
-        std::cout << "Desila se greska prilikom zauzimanja mesta u segmentu" << std::endl;
+        std::cout << "Desila se greska prilikom oslobadjanja mesta u segmentu" << std::endl;
         return false;
     }
 }
@@ -204,7 +204,52 @@ void MemoryManager::printAllSegments() const {
     std::cout << "------------------------------------------------------------\n";
 }
 
-//TODO: treba obrisati segmente ako ih ima vise od 5 slobodnih
 void MemoryManager::cleanupSeg() {
-    
+    // If no memory segments exist, do nothing
+    if (!headAllMemory) {
+        std::cout << "No memory segments to clean up." << std::endl;
+        return;
+    }
+
+    Segment* current = headAllMemory;
+    Segment* smallestFree = nullptr;
+
+    // Loop to find the smallest free segment
+    while (current) {
+        if (current->getIsFree()) {
+            if (!smallestFree || current->getSize() < smallestFree->getSize()) {
+                smallestFree = current;
+            }
+        }
+        current = current->getNextMemory();
+    }
+
+    // If no free segment found, nothing to clean
+    if (!smallestFree) {
+        std::cout << "No free segments to clean up." << std::endl;
+        return;
+    }
+
+    // Remove the smallest free segment
+    std::cout << "Cleaning up segment at address: " << smallestFree->getAddress()
+        << " of size: " << smallestFree->getSize() << std::endl;
+
+    // Adjust pointers around the segment
+    if (smallestFree->getPreviousMemory()) {
+        smallestFree->getPreviousMemory()->setNextMemory(smallestFree->getNextMemory());
+    }
+    else {
+        headAllMemory = smallestFree->getNextMemory();
+    }
+
+    if (smallestFree->getNextMemory()) {
+        smallestFree->getNextMemory()->setPreviousMemory(smallestFree->getPreviousMemory());
+    }
+    else {
+        tailAllMemory = smallestFree->getPreviousMemory();
+    }
+
+    // Free the memory occupied by the segment
+    delete smallestFree;
+    totalSegments--;
 }
