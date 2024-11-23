@@ -9,6 +9,11 @@ using namespace std;
 
 int main()
 {
+    MemoryManager mm(1024,3);
+    mm.printAllSegments();
+    cout << "------------------------------" << endl;
+    mm.allocateSeg(mm.getMemoryHead()->getNextMemory(), 658);
+    mm.printAllSegments();
 
     try {
         Server server(8080); // Initialize server on port 8080
