@@ -9,12 +9,6 @@ using namespace std;
 
 int main()
 {
-    MemoryManager mm(250, 5);
-    mm.createSeg();
-    mm.printAllSegments();
-    cout << "--------------------------" << endl;
-    mm.deleteSeg(mm.getMemoryHead());
-    mm.printAllSegments();
 
     try {
         Server server(8080); // Initialize server on port 8080

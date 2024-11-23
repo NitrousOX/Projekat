@@ -16,7 +16,7 @@ public:
     MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber = 5);
     ~MemoryManager();
 
-    bool allocateSeg(Segment* ptr);
+    bool allocateSeg(Segment* ptr,int size);
     bool deallocateSeg(Segment* ptr);
     bool createSeg();
     bool deleteSeg(Segment* ptr);

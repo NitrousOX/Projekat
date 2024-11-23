@@ -22,9 +22,35 @@ MemoryManager::~MemoryManager() {
 
 //Treba menjati velicinu trenutnog segmenta i kreirati novi
 // Set segment as used
-bool MemoryManager::allocateSeg(Segment* ptr) {
+bool MemoryManager::allocateSeg(Segment* ptr, int size) {
     try {
+        if (size == initialSegmentSize) {
+            ptr->setIsFree(false);
+            return true;
+        }
+        if (size > initialSegmentSize)
+            return false;
+
+        // Create a new segment
+        Segment* newSegment = new Segment(initialSegmentSize);
+
+        // Update the current segment
         ptr->setIsFree(false);
+        ptr->setSize(size);
+
+        // Relocate pointers in the all memory list (next/previous memory)
+        newSegment->setNextMemory(ptr->getNextMemory());
+        if (ptr->getNextMemory() != nullptr) {
+            ptr->getNextMemory()->setPreviousMemory(newSegment);
+        }
+        else {
+            // If `ptr` was the tail, update `tailAllMemory`
+            tailAllMemory = newSegment;
+        }
+
+        ptr->setNextMemory(newSegment);
+        newSegment->setPreviousMemory(ptr);
+
         return true;
     }
     catch (...) {
