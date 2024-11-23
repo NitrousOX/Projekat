@@ -6,6 +6,7 @@ using namespace std;
 int static Menu(TCPClient& client) {
     int choice;
     int size = 0;
+    int address = 0;
     string serializedRequest;
     ClientRequest cr;  // Declare 'cr' before the switch statement
 
@@ -32,8 +33,11 @@ int static Menu(TCPClient& client) {
             client.sendMessage(serializedRequest);  // Send message to server
             break;
         case 2:
-            cout << "\nYou selected: Deallocate Memory\n";
-            client.sendMessage("2");  // Send message to server
+            cout << "\nInsert the address you want to deallocate:\n";
+            cin >> address;
+            cr = ClientRequest(address, choice);
+            serializedRequest = cr.serialize();
+            client.sendMessage(serializedRequest);  // Send message to server
             break;
         case 3:
             cout << "\nThank you for using the program. Goodbye!\n";

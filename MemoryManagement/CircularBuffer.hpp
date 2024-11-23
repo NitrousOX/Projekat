@@ -53,6 +53,7 @@ public:
         }
 
         size_t index = head;
+        cout << "-------------------------------------------------------------------" << endl;
         while (index != tail) {
             cout << "Request at index " << index << ": " << mainBuffer[index] << endl;
             index = (index + 1) % mainBuffer.size();  // Move to the next element in a circular manner
