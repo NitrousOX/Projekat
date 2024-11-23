@@ -90,7 +90,6 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
 
     while (true) {
         int bytesRead = recv(clientSocket, buffer.data(), BUFFER_SIZE - 1, 0);
-        ClientRequest request;
         if (bytesRead <= 0) {
             cout << "Client disconnected." << endl;
             closesocket(clientSocket);
@@ -101,10 +100,10 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
         
 
         
-        request.deserialize(buffer.data()); 
+        ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
        
         cb.add(request);
-        cout << "Received: " << &cb << endl;
+        cb.printBuffer();
        
         send(clientSocket, buffer.data(), bytesRead, 0);
     }

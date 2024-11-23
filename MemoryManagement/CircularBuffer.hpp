@@ -43,6 +43,26 @@ public:
         }
         cv.notify_all();
     }
+
+    void printBuffer() {
+        unique_lock<mutex> lock(mtx);  // Locking the buffer to ensure thread safety.
+
+        if (isEmpty()) {
+            cout << "Buffer is empty!" << endl;
+            return;
+        }
+
+        size_t index = head;
+        while (index != tail) {
+            cout << "Request at index " << index << ": " << mainBuffer[index] << endl;
+            index = (index + 1) % mainBuffer.size();  // Move to the next element in a circular manner
+        }
+        if (full) {
+            cout << "Buffer is full!" << endl;
+        }
+    }
+
+
 };
 
 #endif

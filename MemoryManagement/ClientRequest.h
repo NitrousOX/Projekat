@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <cstring> // For memcpy
+#include <iostream>
 
 class ClientRequest
 {
@@ -61,4 +62,10 @@ public:
 
         return ClientRequest(size, requestType);
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const ClientRequest& request) {
+        os << "Data: " << request.data << ", Request Type: " << request.requestType;
+        return os;
+    }
+
 };
