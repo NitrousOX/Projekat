@@ -45,7 +45,7 @@ void Server::start() {
         throw runtime_error("Listen failed");
     }
 
-    CircularBuffer cb();
+    CircularBuffer cb;
 
     cout << "Server listening on port " << port << endl;
 
