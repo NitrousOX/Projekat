@@ -33,6 +33,8 @@ public:
     void stop();
 
     ~Server();
+
+    void worker(CircularBuffer& cb);
 };
 
 
