@@ -45,7 +45,7 @@ void Server::start() {
         throw runtime_error("Listen failed");
     }
 
-    CircularBuffer cb();
+    CircularBuffer cb;
 
     cout << "Server listening on port " << port << endl;
 
@@ -90,6 +90,7 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
 
     while (true) {
         int bytesRead = recv(clientSocket, buffer.data(), BUFFER_SIZE - 1, 0);
+        ClientRequest request;
         if (bytesRead <= 0) {
             cout << "Client disconnected." << endl;
             closesocket(clientSocket);
@@ -97,19 +98,17 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
         }
 
         buffer[bytesRead] = '\0';
-        cout << "Received: " << buffer.data() << endl;
+        
 
-        ClientRequest request;
+        
         request.deserialize(buffer.data()); 
        
         cb.add(request);
+        cout << "Received: " << &cb << endl;
        
         send(clientSocket, buffer.data(), bytesRead, 0);
     }
 }
-
-
-
 
 Server::~Server() {
     stop(); // Ensure the server stops and cleans up resources
