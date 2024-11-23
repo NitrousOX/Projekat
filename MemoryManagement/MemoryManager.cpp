@@ -162,7 +162,7 @@ Segment* MemoryManager::getMemoryTail() {
 void MemoryManager::printAllSegments() {
     Segment* curr = headAllMemory;
     while(curr != nullptr) {
-        std::cout << "Address: " << curr->getAddress() << std::endl << "isFree: " << curr->getIsFree() << std::endl;
+        std::cout << "Address: " << curr->getAddress() << std::endl << "isFree: " << curr->getIsFree() << std::endl << "Size: " << curr->getSize() << std::endl;
         curr = curr->getNextMemory();
     }
 }
