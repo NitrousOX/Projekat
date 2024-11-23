@@ -134,6 +134,7 @@
     <ClCompile Include="MemoryManager.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HeapManager.hpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="CircularBuffer.hpp" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Server.hpp" />
+    <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

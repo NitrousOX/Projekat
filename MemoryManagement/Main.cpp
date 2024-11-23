@@ -18,10 +18,8 @@ int main()
     mm.printAllSegments();
 
     try {
-        Server server(8080); // Initialize server on port 8080
-        server.start();      // Start the server
-
-        
+        Server server(8080);
+        server.start();      
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

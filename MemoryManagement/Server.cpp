@@ -32,6 +32,19 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
     serverAddr.sin_port = htons(port);
 }
 
+void Server::worker(CircularBuffer& cb) {
+    while (true) {
+        ClientRequest request;
+
+        // Wait for a request to be available
+        if (cb.remove(request)) {
+            // Process the request (this could be anything based on your business logic)
+            cout << "Processing request: " << request.getRequestType() << endl;
+        }
+    }
+}
+
+
 void Server::start() {
     // Bind the socket
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
@@ -47,6 +60,11 @@ void Server::start() {
 
     CircularBuffer cb;
 
+    // Start worker threads
+    for (int i = 0; i < 4; ++i) {  // Assuming 4 workers
+        threads.emplace_back(&Server::worker, this, ref(cb));
+    }
+
     cout << "Server listening on port " << port << endl;
 
     while (true) {
@@ -61,10 +79,11 @@ void Server::start() {
 
         cout << "New client connected." << endl;
 
+        // Handle the client in a separate thread
         threads.emplace_back(&Server::handleClient, this, clientSocket, ref(cb));
-
     }
 }
+
 
 void Server::stop() {
     // Close the server socket
@@ -85,7 +104,7 @@ void Server::stop() {
     cout << "Server stopped" << endl;
 }
 
-void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
+void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
     vector<char> buffer(BUFFER_SIZE);
 
     while (true) {
@@ -96,18 +115,22 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer &cb) {
             break;
         }
 
-        buffer[bytesRead] = '\0';
-        
+        buffer[bytesRead] = '\0';  // Null-terminate the buffer
 
-        
+        // Deserialize the received data into a ClientRequest
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
-       
+
+        // Add the request to the circular buffer for processing by workers
         cb.add(request);
         cb.printBuffer();
-       
-        send(clientSocket, buffer.data(), bytesRead, 0);
+
+        // Send an acknowledgment back to the client (optional)
+        std::string response = "Request received: " + request.getRequestType();
+        send(clientSocket, response.c_str(), response.length(), 0);
     }
 }
+
+
 
 Server::~Server() {
     stop(); // Ensure the server stops and cleans up resources

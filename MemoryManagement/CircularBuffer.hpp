@@ -63,6 +63,30 @@ public:
         }
     }
 
+    bool remove(ClientRequest& request) {
+        unique_lock<mutex> lock(mtx);  // Lock the buffer for thread safety.
+
+        // Wait until the buffer is not empty.
+        cv.wait(lock, [this]() { return !isEmpty(); });
+
+        if (isEmpty()) {
+            return false;  // If the buffer is still empty, return false.
+        }
+
+        request = mainBuffer[head];  // Retrieve the request at the head.
+        head = (head + 1) % mainBuffer.size();  // Move the head pointer.
+
+        full = false;  // The buffer is no longer full after removing an item.
+
+        // If the buffer becomes empty, we update the full flag.
+        if (head == tail) {
+            full = false;
+        }
+
+        cv.notify_all();  // Notify any threads waiting to add an item to the buffer.
+        return true;
+    }
+
 
 };
 
