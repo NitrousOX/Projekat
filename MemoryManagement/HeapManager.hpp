@@ -2,21 +2,24 @@
 #define HEAP_MANAGER_HPP
 
 #include "MemoryManager.h"
+#include <mutex>
 
 #pragma once
 
-//Uraditi mutex
 class HeapManager {
 private:
-	MemoryManager memManager;
-	Segment* headFreeMemory;
-	Segment* tailFreeMemory;
-	unsigned int freeSegments;
+    MemoryManager memManager;
+
+    mutable std::mutex mtx;
 
 public:
-	HeapManager(size_t initialSegmentSize, size_t initialSegmentsNumber);
-	void* allocate_memory(int size);
-	void free_memory(void* address);
+    HeapManager(size_t initialSegmentSize, size_t initialSegmentsNumber);
+
+    bool allocate_memory(int size);
+
+    bool free_memory(int address);
+
+    void printMemory();
 };
 
 #endif // !HEAP_MANAGER_HPP

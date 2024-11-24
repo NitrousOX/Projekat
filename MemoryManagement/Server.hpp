@@ -9,6 +9,7 @@
 #include <ws2tcpip.h> // For sockaddr_in
 #include "CircularBuffer.hpp"
 #include "ThreadMonitor.h"  // Include ThreadMonitor header
+#include "HeapManager.hpp"
 
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
@@ -35,7 +36,7 @@ public:
 
     ~Server();
 
-    void worker(CircularBuffer& cb);
+    void worker(CircularBuffer& cb, HeapManager& hm);
 };
 
 #endif // !SERVER_H

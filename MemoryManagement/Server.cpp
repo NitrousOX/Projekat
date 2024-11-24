@@ -1,5 +1,6 @@
 #include "Server.hpp"
 #include "CircularBuffer.hpp"
+#include "HeapManager.hpp"
 #include <thread>
 #include <vector>
 #include <mutex>
@@ -30,13 +31,27 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
     serverAddr.sin_port = htons(port);
 }
 
-void Server::worker(CircularBuffer& cb) {
+void Server::worker(CircularBuffer& cb, HeapManager &hm) {
     while (true) {
         ClientRequest request;
 
         if (cb.remove(request)) {
             monitor.threadStarted();  // Notify monitor that a worker thread has started
-            cout << "Processing request: " << request.getRequestType() << endl;
+            
+            switch (request.getRequestType()) {
+                case 1:
+                    cout << "Allocating memory..." << endl;
+                    hm.allocate_memory(request.getData());
+                    break;
+                case 2:
+                    cout << "Deallocating memory..." << endl;
+                    hm.free_memory(request.getData());
+                    break;
+                default:
+                    cout << "Wrong request!" << endl;
+                    break;
+            }
+            hm.printMemory();
             monitor.threadFinished();  // Notify monitor that the worker thread has finished
         }
     }
@@ -54,10 +69,11 @@ void Server::start() {
     }
 
     CircularBuffer cb;
+    HeapManager heapMngr(1024, 5);
 
     // Launch worker threads
     for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(&Server::worker, this, ref(cb));
+        threads.emplace_back(&Server::worker, this, ref(cb), ref(heapMngr));
     }
 
     cout << "Server listening on port " << port << endl;

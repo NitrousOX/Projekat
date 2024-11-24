@@ -11,7 +11,6 @@ private:
     Segment* tailAllMemory;
     size_t totalSegments; 
 
-
 public:
     MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber = 5);
     ~MemoryManager();
@@ -20,12 +19,12 @@ public:
     bool deallocateSeg(Segment* ptr);
     bool createSeg();
     bool deleteSeg(Segment* ptr);
-    void cleanupSeg();
 
-    void printAllSegments() const;
 
     Segment* getMemoryHead();
     Segment* getMemoryTail();
 
+    void printAllSegments() const;
+    void cleanupSeg();
 };
 

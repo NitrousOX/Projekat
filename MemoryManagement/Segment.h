@@ -9,8 +9,6 @@ private:
     size_t segAdress;
     Segment* nextMemory;
     Segment* previousMemory;
-    Segment* nextFreeMemory;
-    Segment* previousFreeMemory;
     size_t size;
     bool isFree = true;
 
@@ -36,29 +34,6 @@ public:
 
     void setPreviousMemory(Segment* newPrevious) {
         previousMemory = newPrevious;
-    }
-
-    //getter setter for next free memory segment
-    Segment* getNextFreeMemory() const {
-        if (isFree)
-            return nextFreeMemory;
-        else
-            return nullptr;
-    }
-
-    void setNextFreeMemory(Segment* newNext) {
-        nextFreeMemory = newNext;
-    }
-    //getter setter for previous memory segment
-    Segment* getPreviousFreeMemory() const {
-        if (isFree)
-            return previousFreeMemory;
-        else
-            return nullptr;
-    }
-
-    void setPreviousFreeMemory(Segment* newPrevious) {
-        previousFreeMemory = newPrevious;
     }
 
     // Getter for size

@@ -10,9 +10,8 @@
 
 // MemoryManager constructor
 MemoryManager::MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber)
-    : initialSegmentSize(initialSegmentSize), headAllMemory(nullptr), tailAllMemory(nullptr), totalSegments(0) {
+    : initialSegmentSize(initialSegmentSize), headAllMemory(nullptr), tailAllMemory(nullptr), totalSegments(0){
 
-    // Allocate the initial segments
     for (size_t i = 0; i < initialSegmentsNumber; ++i) {
         createSeg();
     }
@@ -20,12 +19,10 @@ MemoryManager::MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNu
 
 // MemoryManager destructor
 MemoryManager::~MemoryManager() {
-    // Release all segments when the manager is destroyed
-    cleanupSeg();
+    while(totalSegments != 0)
+        cleanupSeg();
 }
 
-//Treba menjati velicinu trenutnog segmenta i kreirati novi
-// Set segment as used
 bool MemoryManager::allocateSeg(Segment* ptr, int size) {
     try {
         if (size == initialSegmentSize) {
@@ -38,10 +35,9 @@ bool MemoryManager::allocateSeg(Segment* ptr, int size) {
         // Create a new segment
         Segment* newSegment = new Segment(initialSegmentSize);
 
-        // Update the current segment
-        ptr->setIsFree(false);
-        ptr->setSize(size);
+       
 
+        //------------------------------------------------------------
         // Relocate pointers in the all memory list (next/previous memory)
         newSegment->setNextMemory(ptr->getNextMemory());
         if (ptr->getNextMemory() != nullptr) {
@@ -54,15 +50,19 @@ bool MemoryManager::allocateSeg(Segment* ptr, int size) {
 
         ptr->setNextMemory(newSegment);
         newSegment->setPreviousMemory(ptr);
-        newSegment->setSize(initialSegmentSize - size);
+        newSegment->setSize(ptr->getSize() - size);
         newSegment->setAddress(ptr->getAddress() + size);
+
+        // Update the current segment
+        ptr->setIsFree(false);
+        ptr->setSize(size);
 
         return true;
     }
     catch (...) {
         std::cout << "Desila se greska prilikom zauzimanja mesta u segmentu" << std::endl;
         return false;
-   }
+    }
 }
 // Deallocate a memory segment
 bool MemoryManager::deallocateSeg(Segment* ptr) {
@@ -165,6 +165,7 @@ Segment* MemoryManager::getMemoryTail() {
     return tailAllMemory;
 }
 
+
 void MemoryManager::printAllSegments() const {
     const Segment* current = headAllMemory;
 
@@ -205,7 +206,6 @@ void MemoryManager::printAllSegments() const {
 }
 
 void MemoryManager::cleanupSeg() {
-    // If no memory segments exist, do nothing
     if (!headAllMemory) {
         std::cout << "No memory segments to clean up." << std::endl;
         return;
@@ -214,7 +214,6 @@ void MemoryManager::cleanupSeg() {
     Segment* current = headAllMemory;
     Segment* smallestFree = nullptr;
 
-    // Loop to find the smallest free segment
     while (current) {
         if (current->getIsFree()) {
             if (!smallestFree || current->getSize() < smallestFree->getSize()) {
@@ -224,17 +223,14 @@ void MemoryManager::cleanupSeg() {
         current = current->getNextMemory();
     }
 
-    // If no free segment found, nothing to clean
     if (!smallestFree) {
         std::cout << "No free segments to clean up." << std::endl;
         return;
     }
 
-    // Remove the smallest free segment
     std::cout << "Cleaning up segment at address: " << smallestFree->getAddress()
         << " of size: " << smallestFree->getSize() << std::endl;
 
-    // Adjust pointers around the segment
     if (smallestFree->getPreviousMemory()) {
         smallestFree->getPreviousMemory()->setNextMemory(smallestFree->getNextMemory());
     }
@@ -249,7 +245,6 @@ void MemoryManager::cleanupSeg() {
         tailAllMemory = smallestFree->getPreviousMemory();
     }
 
-    // Free the memory occupied by the segment
     delete smallestFree;
     totalSegments--;
 }
