@@ -123,13 +123,11 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
 
         buffer[bytesRead] = '\0';  // Null-terminate the string
 
-        // Deserialize the client request
+        
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
 
         cb.add(request);
-        cb.printBuffer();
-
-        // Respond back to the client
+        monitor.threadStarted();
         std::string response = "Request received: " + request.getRequestType();
         send(clientSocket, response.c_str(), response.length(), 0);
     }
