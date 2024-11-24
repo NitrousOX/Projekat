@@ -35,7 +35,9 @@ void Server::worker(CircularBuffer& cb) {
         ClientRequest request;
 
         if (cb.remove(request)) {
-            monitor.threadStarted();  // Notify monitor that a worker thread has started
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+            
+            // Notify monitor that a worker thread has started
             cout << "Processing request: " << request.getRequestType() << endl;
             monitor.threadFinished();  // Notify monitor that the worker thread has finished
         }
@@ -107,13 +109,11 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
 
         buffer[bytesRead] = '\0';  // Null-terminate the string
 
-        // Deserialize the client request
+        
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
 
         cb.add(request);
-        cb.printBuffer();
-
-        // Respond back to the client
+        monitor.threadStarted();
         std::string response = "Request received: " + request.getRequestType();
         send(clientSocket, response.c_str(), response.length(), 0);
     }
