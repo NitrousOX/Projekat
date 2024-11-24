@@ -18,7 +18,7 @@ ThreadPool::~ThreadPool() {
 
 void ThreadPool::worker() {
     while (!stopFlag.load()) {
-        ClientRequest request; 
+        ClientRequest request;
 
 
         {
@@ -31,7 +31,7 @@ void ThreadPool::worker() {
             }
 
             if (!buffer.remove(request)) {
-                continue;  
+                continue;
             }
         }
         cout << "Processing request: " << request << endl;
@@ -39,7 +39,6 @@ void ThreadPool::worker() {
 }
 
 void ThreadPool::stop() {
-    stopFlag.store(true); 
-    condition.notify_all();  
+    stopFlag.store(true);
+    condition.notify_all();
 }
-

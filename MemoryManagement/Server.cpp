@@ -4,13 +4,12 @@
 #include <vector>
 #include <mutex>
 #include <array>
-
+#include "ThreadMonitor.h" 
 
 #define BUFFER_SIZE 1024
 
 using namespace std;
 
-//Implementirati circular buffer
 Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
     // Initialize Winsock
     WSADATA wsaData;
@@ -18,14 +17,13 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
         throw runtime_error("WSAStartup failed");
     }
 
-    // Create server socket
+    // Create the server socket
     serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (serverSocket == INVALID_SOCKET) {
         WSACleanup();
         throw runtime_error("Socket creation failed");
     }
 
-    // Set up the server address structure
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
@@ -36,23 +34,20 @@ void Server::worker(CircularBuffer& cb) {
     while (true) {
         ClientRequest request;
 
-        // Wait for a request to be available
         if (cb.remove(request)) {
-            // Process the request (this could be anything based on your business logic)
+            monitor.threadStarted();  // Notify monitor that a worker thread has started
             cout << "Processing request: " << request.getRequestType() << endl;
+            monitor.threadFinished();  // Notify monitor that the worker thread has finished
         }
     }
 }
 
-
 void Server::start() {
-    // Bind the socket
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         stop();
         throw runtime_error("Bind failed");
     }
 
-    // Listen for incoming connections
     if (listen(serverSocket, 5) == SOCKET_ERROR) {
         stop();
         throw runtime_error("Listen failed");
@@ -60,15 +55,14 @@ void Server::start() {
 
     CircularBuffer cb;
 
-    // Start worker threads
-    for (int i = 0; i < 4; ++i) {  // Assuming 4 workers
+    // Launch worker threads
+    for (int i = 0; i < 4; ++i) {
         threads.emplace_back(&Server::worker, this, ref(cb));
     }
 
     cout << "Server listening on port " << port << endl;
 
     while (true) {
-        // Accept a new client connection
         sockaddr_in clientAddr;
         int clientLen = sizeof(clientAddr);
         SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
@@ -79,27 +73,23 @@ void Server::start() {
 
         cout << "New client connected." << endl;
 
-        // Handle the client in a separate thread
+        // Launch a new thread to handle the client
         threads.emplace_back(&Server::handleClient, this, clientSocket, ref(cb));
     }
 }
 
-
 void Server::stop() {
-    // Close the server socket
     if (serverSocket != INVALID_SOCKET) {
         closesocket(serverSocket);
         serverSocket = INVALID_SOCKET;
     }
 
-    // Join all client threads
     for (auto& thread : threads) {
         if (thread.joinable()) {
             thread.join();
         }
     }
 
-    // Clean up Winsock
     WSACleanup();
     cout << "Server stopped" << endl;
 }
@@ -115,23 +105,20 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
             break;
         }
 
-        buffer[bytesRead] = '\0';  // Null-terminate the buffer
+        buffer[bytesRead] = '\0';  // Null-terminate the string
 
-        // Deserialize the received data into a ClientRequest
+        // Deserialize the client request
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
 
-        // Add the request to the circular buffer for processing by workers
         cb.add(request);
         cb.printBuffer();
 
-        // Send an acknowledgment back to the client (optional)
+        // Respond back to the client
         std::string response = "Request received: " + request.getRequestType();
         send(clientSocket, response.c_str(), response.length(), 0);
     }
 }
 
-
-
 Server::~Server() {
-    stop(); // Ensure the server stops and cleans up resources
+    stop();
 }

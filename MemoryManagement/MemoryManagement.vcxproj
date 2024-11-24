@@ -143,6 +143,7 @@
     <ClInclude Include="CircularBuffer.hpp" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Server.hpp" />
+    <ClInclude Include="ThreadMonitor.h" />
     <ClInclude Include="ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

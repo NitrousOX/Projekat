@@ -8,24 +8,25 @@
 #include <winsock2.h> // Windows Sockets API
 #include <ws2tcpip.h> // For sockaddr_in
 #include "CircularBuffer.hpp"
+#include "ThreadMonitor.h"  // Include ThreadMonitor header
 
 #pragma comment(lib, "Ws2_32.lib") // Link with Winsock library
 
 class Server {
 private:
-    //TODO:Circular buffer
-   // CircularBuffer<std::string> requestBuffer; // Buffer to store client requests
     SOCKET serverSocket;             // Server socket file descriptor
     int port;                        // Port number to bind the server
     sockaddr_in serverAddr;          // Server address structure
     std::vector<std::thread> threads; // Vector to store client threads
     const int BUFFER_SIZE = 1024;    // Size of the buffer for client messages
 
+    // ThreadMonitor to track active threads
+    ThreadMonitor monitor;
+
     // Handles communication with a single client
     void handleClient(SOCKET clientSocket, CircularBuffer& cb);
 
 public:
-
     Server(int port);
 
     void start();
@@ -36,6 +37,5 @@ public:
 
     void worker(CircularBuffer& cb);
 };
-
 
 #endif // !SERVER_H

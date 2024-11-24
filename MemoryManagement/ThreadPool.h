@@ -9,6 +9,7 @@ using namespace std;
 #include <atomic>
 #include <mutex>
 #include "CircularBuffer.hpp" 
+#include "ThreadMonitor.h"
 
 class ThreadPool
 {
@@ -18,6 +19,7 @@ private:
     condition_variable condition;  // Condition variable for workers
     atomic<bool> stopFlag;  // Flag to stop the worker threads
     CircularBuffer& buffer;  // CircularBuffer reference to fetch requests
+    ThreadMonitor monitor;
 
     void worker();  // Worker function to process tasks
 

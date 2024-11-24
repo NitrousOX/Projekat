@@ -1,6 +1,3 @@
-// MemoryManagement.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include "Server.hpp"
 #include "Segment.h"
@@ -19,10 +16,11 @@ int main()
 
     try {
         Server server(8080);
-        server.start();      
+        server.start();  
+        
     }
     catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+       cerr << "Error: " << e.what() << endl;
     }
 
     return 0;
