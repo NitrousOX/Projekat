@@ -10,6 +10,7 @@ private:
     Segment* headAllMemory;
     Segment* tailAllMemory;
     size_t totalSegments; 
+    size_t totalFreeSegments;
 
 public:
     MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNumber = 5);
