@@ -20,6 +20,7 @@ public:
     bool free_memory(int address);
 
     void printMemory();
+    std::string getMemory();
 };
 
 #endif // !HEAP_MANAGER_HPP

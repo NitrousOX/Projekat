@@ -17,7 +17,8 @@ int static Menu(TCPClient& client) {
         cout << "=============================\n";
         cout << "  1. Allocate Memory         \n";
         cout << "  2. Deallocate Memory       \n";
-        cout << "  3. Exit                    \n";
+        cout << "  3. Show                    \n";
+        cout << "  4. Exit                    \n";
         cout << "=============================\n";
         cout << "Please enter your choice: ";
         cin >> choice;
@@ -40,6 +41,12 @@ int static Menu(TCPClient& client) {
             client.sendMessage(serializedRequest);  // Send message to server
             break;
         case 3:
+            cr = ClientRequest(0, choice);
+            serializedRequest = cr.serialize();
+            client.sendMessage(serializedRequest);  // Send message to server
+            cout << client.receiveMessage();
+            break;
+        case 4:
             cout << "\nThank you for using the program. Goodbye!\n";
             break;
         default:
@@ -47,13 +54,13 @@ int static Menu(TCPClient& client) {
         }
 
         // Pause to show the result before clearing the screen
-        if (choice != 3) {
+        if (choice != 4) {
             cout << "\nPress Enter to continue...";
             cin.ignore();
             cin.get(); // Wait for Enter key
         }
 
-    } while (choice != 3);
+    } while (choice != 4);
 
     return 0;
 }

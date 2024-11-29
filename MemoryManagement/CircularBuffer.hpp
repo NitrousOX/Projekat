@@ -3,14 +3,14 @@
 
 #include <mutex>
 #include <condition_variable>
-#include "ClientRequest.h"
+#include "ExtendedRequest.hpp"
 #include <array>
 
 using namespace std;
 
 class CircularBuffer {
 private:
-    array<ClientRequest, 10> mainBuffer;  
+    array<ExtendedClientRequest, 10> mainBuffer;  
     size_t head = 0;                     
     size_t tail = 0;                     
     bool full = false;                   
@@ -28,7 +28,7 @@ public:
         return (!full && (head == tail));
     }
 
-    void add(const ClientRequest& request) {
+    void add(const ExtendedClientRequest& request) {
         unique_lock<mutex> lock(mtx); 
 
         if (full) {
@@ -63,7 +63,7 @@ public:
         }
     }
 
-    bool remove(ClientRequest& request) {
+    bool remove(ExtendedClientRequest& request) {
         unique_lock<mutex> lock(mtx);  // Lock the buffer for thread safety.
 
         // Wait until the buffer is not empty.

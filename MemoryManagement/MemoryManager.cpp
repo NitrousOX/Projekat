@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <string>
 #include <algorithm>
+#include <sstream>
+
 
 #define MAX_FREE_SEGMENTS 5
 
@@ -172,11 +174,12 @@ Segment* MemoryManager::getMemoryTail() {
 }
 
 
-void MemoryManager::printAllSegments() const {
+std::string MemoryManager::printAllSegments() const {
     const Segment* current = headAllMemory;
+    std::ostringstream output;
 
-    std::cout << "\nMemory Segments Visualization:\n";
-    std::cout << "------------------------------------------------------------\n";
+    output << "\nMemory Segments Visualization:\n";
+    output << "------------------------------------------------------------\n";
 
     while (current != nullptr) {
         // Build the content dynamically
@@ -187,29 +190,27 @@ void MemoryManager::printAllSegments() const {
         // Determine box width dynamically based on the longest content
         size_t boxWidth = std::max({ id.length(), size.length(), free.length() }) + 4;
 
-        // Choose color for borders and content based on isFree
-        std::string borderColor = current->getIsFree() ? "\033[1;32m" : "\033[1;31m"; // Green for free, Red for allocated
-        std::string textColor = "\033[0m"; // Default text color (white/neutral)
+        // Construct the box
+        std::string topBottomBorder = "+" + std::string(boxWidth, '-') + "+";
+        std::string idLine = "| " + id + std::string(boxWidth - id.length() - 2, ' ') + " |";
+        std::string sizeLine = "| " + size + std::string(boxWidth - size.length() - 2, ' ') + " |";
+        std::string freeLine = "| " + free + std::string(boxWidth - free.length() - 2, ' ') + " |";
 
-        // Construct the box with colored borders
-        std::string topBottomBorder = borderColor + "+" + std::string(boxWidth, '-') + "+" + textColor;
-        std::string idLine = borderColor + "| " + textColor + id + std::string(boxWidth - id.length() - 2, ' ') + borderColor + " |" + textColor;
-        std::string sizeLine = borderColor + "| " + textColor + size + std::string(boxWidth - size.length() - 2, ' ') + borderColor + " |" + textColor;
-        std::string freeLine = borderColor + "| " + textColor + free + std::string(boxWidth - free.length() - 2, ' ') + borderColor + " |" + textColor;
-
-        // Print the segment
-        std::cout << topBottomBorder << "\n";
-        std::cout << idLine << "\n";
-        std::cout << sizeLine << "\n";
-        std::cout << freeLine << "\n";
-        std::cout << topBottomBorder << "\n";
+        // Append the segment to the output
+        output << topBottomBorder << "\n";
+        output << idLine << "\n";
+        output << sizeLine << "\n";
+        output << freeLine << "\n";
+        output << topBottomBorder << "\n";
 
         // Move to the next segment
         current = current->getNextMemory();
     }
 
-    std::cout << "------------------------------------------------------------\n";
+    output << "------------------------------------------------------------\n";
+    return output.str();
 }
+
 
 void MemoryManager::cleanupSeg() {
     if (!headAllMemory) {

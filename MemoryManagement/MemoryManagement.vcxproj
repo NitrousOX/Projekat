@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ExtendedRequest.hpp" />
     <ClCompile Include="HeapManager.cpp" />
     <ClCompile Include="ClientRequest.cpp" />
     <ClCompile Include="Main.cpp" />

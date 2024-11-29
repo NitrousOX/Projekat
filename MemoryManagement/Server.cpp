@@ -33,10 +33,11 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
 
 void Server::worker(CircularBuffer& cb, HeapManager &hm) {
     while (true) {
-        ClientRequest request;
+        ExtendedClientRequest request;
 
         if (cb.remove(request)) {
             monitor.threadStarted();  // Notify monitor that a worker thread has started
+            string response;
             
             switch (request.getRequestType()) {
                 case 1:
@@ -46,6 +47,11 @@ void Server::worker(CircularBuffer& cb, HeapManager &hm) {
                 case 2:
                     cout << "Deallocating memory..." << endl;
                     hm.free_memory(request.getData());
+                    break;
+                case 3:
+                    cout << "Printing memory to client..." << endl;
+                    response = hm.getMemory();
+                    send(request.getClientSocket(), response.c_str(), response.length(), 0);
                     break;
                 default:
                     cout << "Wrong request!" << endl;
@@ -72,7 +78,7 @@ void Server::start() {
     HeapManager heapMngr(1024, 5);
 
     // Launch worker threads
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 10; ++i) {
         threads.emplace_back(&Server::worker, this, ref(cb), ref(heapMngr));
     }
 
@@ -125,10 +131,11 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
 
         
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
+        ExtendedClientRequest exReq = ExtendedClientRequest(request.getData(), request.getRequestType(), clientSocket);
 
-        cb.add(request);
+        cb.add(exReq);
         monitor.threadStarted();
-        std::string response = "Request received: " + request.getRequestType();
+        std::string response = "Request received: " + exReq.getRequestType();
         send(clientSocket, response.c_str(), response.length(), 0);
     }
 }

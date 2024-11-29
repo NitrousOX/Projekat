@@ -18,7 +18,7 @@ ThreadPool::~ThreadPool() {
 
 void ThreadPool::worker() {
     while (!stopFlag.load()) {
-        ClientRequest request;
+        ExtendedClientRequest request;
 
 
         {

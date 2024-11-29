@@ -1,4 +1,5 @@
 #include "Segment.h"
+#include <string>
 
 //Treba menjati da prati dodatno i slobodnu memoriju 
 //Treba napraviti i tail
@@ -25,7 +26,7 @@ public:
     Segment* getMemoryHead();
     Segment* getMemoryTail();
 
-    void printAllSegments() const;
+    std::string printAllSegments() const;
     void cleanupSeg();
 };
 

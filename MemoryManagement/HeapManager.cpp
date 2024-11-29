@@ -6,7 +6,11 @@ HeapManager::HeapManager(size_t initialSegmentSize, size_t initialSegmentsNumber
     : memManager(initialSegmentSize, initialSegmentsNumber) {}
 
 void HeapManager::printMemory() {
-    memManager.printAllSegments();
+    std::cout << memManager.printAllSegments();
+}
+
+std::string HeapManager::getMemory() {
+    return memManager.printAllSegments();
 }
 
 
