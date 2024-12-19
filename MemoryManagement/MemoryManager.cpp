@@ -21,10 +21,16 @@ MemoryManager::MemoryManager(size_t initialSegmentSize, size_t initialSegmentsNu
 
 // MemoryManager destructor
 MemoryManager::~MemoryManager() {
+    cleanupAllSegments();
 }
 
 bool MemoryManager::allocateSeg(Segment* ptr, int size) {
     try {
+        if (totalFreeSegments == 0) {
+            createSeg();
+            totalFreeSegments++;
+            totalSegments++;
+        }
         if (size == initialSegmentSize) {
             ptr->setIsFree(false);
             totalFreeSegments--;
@@ -239,4 +245,19 @@ void MemoryManager::cleanupSeg() {
         << " of size: " << smallestFree->getSize() << std::endl;
 
     deleteSeg(smallestFree);
+}
+
+void MemoryManager::cleanupAllSegments() {
+    Segment* current = headAllMemory;
+
+    while (current) {
+        Segment* next = current->getNextMemory();
+        delete current;  // Free the current segment
+        current = next; // Move to the next segment
+    }
+
+    headAllMemory = nullptr;
+    tailAllMemory = nullptr;
+    totalSegments = 0;
+    totalFreeSegments = 0;
 }

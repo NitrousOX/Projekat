@@ -31,31 +31,31 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
     serverAddr.sin_port = htons(port);
 }
 
-void Server::worker(CircularBuffer& cb, HeapManager &hm) {
+void Server::worker(CircularBuffer& cb, HeapManager& hm) {
     while (true) {
         ExtendedClientRequest request;
 
         if (cb.remove(request)) {
             monitor.threadStarted();  // Notify monitor that a worker thread has started
             string response;
-            
+
             switch (request.getRequestType()) {
-                case 1:
-                    cout << "Allocating memory..." << endl;
-                    hm.allocate_memory(request.getData());
-                    break;
-                case 2:
-                    cout << "Deallocating memory..." << endl;
-                    hm.free_memory(request.getData());
-                    break;
-                case 3:
-                    cout << "Printing memory to client..." << endl;
-                    response = hm.getMemory();
-                    send(request.getClientSocket(), response.c_str(), response.length(), 0);
-                    break;
-                default:
-                    cout << "Wrong request!" << endl;
-                    break;
+            case 1:
+                cout << "Allocating memory..." << endl;
+                hm.allocate_memory(request.getData());
+                break;
+            case 2:
+                cout << "Deallocating memory..." << endl;
+                hm.free_memory(request.getData());
+                break;
+            case 3:
+                cout << "Printing memory to client..." << endl;
+                response = hm.getMemory();
+                send(request.getClientSocket(), response.c_str(), response.length(), 0);
+                break;
+            default:
+                cout << "Wrong request!" << endl;
+                break;
             }
             hm.printMemory();
             monitor.threadFinished();  // Notify monitor that the worker thread has finished
@@ -129,7 +129,7 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
 
         buffer[bytesRead] = '\0';  // Null-terminate the string
 
-        
+
         ClientRequest request = ClientRequest::deserialize(std::string(buffer.data(), bytesRead));
         ExtendedClientRequest exReq = ExtendedClientRequest(request.getData(), request.getRequestType(), clientSocket);
 

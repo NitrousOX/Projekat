@@ -10,12 +10,12 @@ using namespace std;
 
 class CircularBuffer {
 private:
-    array<ExtendedClientRequest, 10> mainBuffer;  
-    size_t head = 0;                     
-    size_t tail = 0;                     
-    bool full = false;                   
-    mutex mtx;                            
-    condition_variable cv;               
+    array<ExtendedClientRequest, 10> mainBuffer;
+    size_t head = 0;
+    size_t tail = 0;
+    bool full = false;
+    mutex mtx;
+    condition_variable cv;
 
 public:
     CircularBuffer() {}
@@ -29,14 +29,14 @@ public:
     }
 
     void add(const ExtendedClientRequest& request) {
-        unique_lock<mutex> lock(mtx); 
+        unique_lock<mutex> lock(mtx);
 
         if (full) {
             head = (head + 1) % mainBuffer.size();
         }
 
-        mainBuffer[tail] = request; 
-        tail = (tail + 1) % mainBuffer.size(); 
+        mainBuffer[tail] = request;
+        tail = (tail + 1) % mainBuffer.size();
 
         if (tail == head) {
             full = true;

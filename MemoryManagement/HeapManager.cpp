@@ -6,10 +6,12 @@ HeapManager::HeapManager(size_t initialSegmentSize, size_t initialSegmentsNumber
     : memManager(initialSegmentSize, initialSegmentsNumber) {}
 
 void HeapManager::printMemory() {
+    std::lock_guard<std::mutex> lock(mtx);
     std::cout << memManager.printAllSegments();
 }
 
 std::string HeapManager::getMemory() {
+    std::lock_guard<std::mutex> lock(mtx);
     return memManager.printAllSegments();
 }
 

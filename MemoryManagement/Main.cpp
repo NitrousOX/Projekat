@@ -9,8 +9,7 @@ int main()
 
     try {
         Server server(8080);
-        server.start();  
-        
+        server.start();
     }
     catch (const std::exception& e) {
        cerr << "Error: " << e.what() << endl;
