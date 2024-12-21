@@ -20,6 +20,7 @@ private:
     sockaddr_in serverAddr;          // Server address structure
     std::vector<std::thread> threads; // Vector to store client threads
     const int BUFFER_SIZE = 1024;    // Size of the buffer for client messages
+    atomic_bool stopFlag;
 
     // ThreadMonitor to track active threads
     ThreadMonitor monitor;

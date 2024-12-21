@@ -3,6 +3,7 @@
 #include "TCPClient.h"
 #include <vector>
 #include <thread>
+#include <mutex>
 using namespace std;
 
 void ClientApp();
@@ -10,8 +11,8 @@ void StressTest();
 
 int main() {
     int chosenType;
-    printf("Stress test (1) | Client app(2)");
     do {
+    printf("Stress test (1) | Client app(2)\n 3->exit");
 
         std::cin >> chosenType;
         switch (chosenType) {
@@ -25,7 +26,7 @@ int main() {
                 cout << "Invalid choice. Please select 1 or 2.\n";
                 break;
         }
-    } while (!(chosenType == 1 || chosenType == 2));
+    } while (chosenType!=3);
 
    
 
@@ -52,14 +53,17 @@ void StressTest() {
     // Simulate multiple TCPClient connections
     const int connectionCount = 20; // Number of connections to simulate
     vector<thread> threads;
+    mutex outputLock;
 
     for (int i = 0; i < connectionCount; ++i) {
-        threads.emplace_back([i]() {
+        threads.emplace_back([i, &outputLock]() {
             try {
                 TCPClient client;
                 client.connectToServer("127.0.0.1", 8080); // Adjust server IP/port
-                cout << "Connection " << i + 1 << " successful.\n";
-
+                {
+                    lock_guard<mutex> lock(outputLock);
+                    cout << "Connection " << i + 1 << " successful.\n";
+                }
                 //Allocate memory for 128 bytes
                 ClientRequest cr = ClientRequest(123, 1);
                 string serializedRequest = cr.serialize();
@@ -70,6 +74,7 @@ void StressTest() {
                 client.sendMessage(serializedRequest);
             }
             catch (const exception& e) {
+                lock_guard<mutex> lock(outputLock);
                 cerr << "Connection " << i + 1 << " failed: " << e.what() << endl;
             }
             });

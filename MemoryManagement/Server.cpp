@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
+Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET), stopFlag(false) {
     // Initialize Winsock
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -32,7 +32,7 @@ Server::Server(int port) : port(port), serverSocket(INVALID_SOCKET) {
 }
 
 void Server::worker(CircularBuffer& cb, HeapManager& hm) {
-    while (true) {
+    while (!stopFlag.load()) {
         ExtendedClientRequest request;
 
         if (cb.remove(request)) {
@@ -84,7 +84,7 @@ void Server::start() {
 
     cout << "Server listening on port " << port << endl;
 
-    while (true) {
+    while (!stopFlag.load()) {
         sockaddr_in clientAddr;
         int clientLen = sizeof(clientAddr);
         SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
@@ -101,6 +101,8 @@ void Server::start() {
 }
 
 void Server::stop() {
+    stopFlag.store(true);
+
     if (serverSocket != INVALID_SOCKET) {
         closesocket(serverSocket);
         serverSocket = INVALID_SOCKET;
@@ -119,7 +121,7 @@ void Server::stop() {
 void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
     vector<char> buffer(BUFFER_SIZE);
 
-    while (true) {
+    while (!stopFlag.load()) {
         int bytesRead = recv(clientSocket, buffer.data(), BUFFER_SIZE - 1, 0);
         if (bytesRead <= 0) {
             cout << "Client disconnected." << endl;
