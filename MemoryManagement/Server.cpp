@@ -138,6 +138,7 @@ void Server::handleClient(SOCKET clientSocket, CircularBuffer& cb) {
         std::string response = "Request received: " + exReq.getRequestType();
         send(clientSocket, response.c_str(), response.length(), 0);
     }
+    monitor.threadFinished();
 }
 
 Server::~Server() {
